@@ -364,12 +364,14 @@
         function moveToNextCharacter() {
             currentIndex++;
 
-            if (currentIndex < (currentLanguage === 'hindi' ? hindiChars : hiraganaChars).length) {
+            if (currentIndex < (currentLanguage === 'hindi' ? hindiChars : currentLanguage === 'hiragana' ? hiraganaChars : katakanaChars).length) {
                 displayCharacter();
+                document.getElementById("inputField").focus(); // Keep the keyboard open
             } else {
                 showSummary();
             }
         }
+
 
         function showSummary() {
             document.getElementById("summary").classList.remove("hidden");
