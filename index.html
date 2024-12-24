@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Learning App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #272838;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #F3DE8A;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+
+        #character {
+            font-size: 100px; 
+            margin: 20px;
+        }
+
+        #inputField {
+            padding: 15px;
+            font-size: 20px;
+            text-align: center;
+            border: 3px solid;
+            border-radius: 5px;
+            width: 300px;
+            margin: 10px 0;
+            border-color: #7B9E89;
+        }
+
+        #submitBtn {
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: #272838;
+            color: #7B9E89;
+            border-color: #7B9E89;
+            border-radius: 5px;
+            border-style: solid;
+        }
+
+        #submitBtn:hover{
+            color: #637f6e;
+            border-color: #637f6e;
+        }
+
+        .result {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        .summary {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+
+        .correct {
+            color: green;
+        }
+
+        .incorrect {
+            color: red;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #nextBtn, #restartBtn {
+            padding: 15px 30px;
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: #272838;
+            color: #E7ECEF;
+            border-color: #E7ECEF;
+            border-radius: 5px;
+            border-style: solid;
+        }
+
+        #nextBtn:hover, #restartBtn:hover {
+            color: #c4c8ca;
+            border-color: #c4c8ca;
+        }
+
+        #backToMenuBtn {
+            padding: 15px 30px;
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: #f44336; /* Red color */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            position: fixed;
+            bottom: 40px;
+        }
+
+        #backToMenuBtn:hover {
+            background-color: #e53935; /* Darker red on hover */
+        }
+
+
+        .menu-container {
+            padding-top: 15%;
+            text-align: center;
+        }
+
+        .menu-button {
+            padding: 20px;
+            font-size: 20px;
+            cursor: pointer;
+            margin: 10px;
+            background-color: #637f6e;
+            color: #F9F8F8;
+            border-color: #F9F8F8;
+            border-radius: 5px;
+        }
+
+        .menu-button:hover {
+            background-color: #52695c;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="learningScreen" class="container hidden">
+        <div id="character"></div>
+        <input type="text" id="inputField" placeholder="Enter anglicized spelling" autocomplete="off"/>
+        <button id="submitBtn">Submit</button>
+        <div id="result" class="result"></div>
+        <button id="nextBtn" class="hidden">Next</button>
+        <button id="restartBtn" class="hidden">Restart</button>
+        <button id="backToMenuBtn">Back to Menu</button>
+    </div>
+    
+    <div id="summary" class="summary hidden">
+        <p>Total Correct: <span id="correctCount">0</span> / <span id="totalCount">0</span> (<span id="correctPercentage">0</span>%)</p>
+    </div>
+
+    <div id="menuScreen" class="menu-container">
+        <h1 style="color:#F3DE8A">Select what you want to practice</h1>
+        <button class="menu-button" onclick="chooseLanguage('hindi')">Devanagari</button>
+        <button class="menu-button" onclick="chooseLanguage('hiragana')">Hiragana</button>
+        <button class="menu-button" onclick="chooseLanguage('katakana')">Katakana</button>
+        <button class="menu-button" onclick="window.location.href='german.html'">German</button>
+    </div>
+
+    <script>
+        const hindiChars = [
+            { char: 'अ', correctSpelling: 'a' },
+            { char: 'आ', correctSpelling: 'aa' },
+            { char: 'इ', correctSpelling: 'i' },
+            { char: 'ई', correctSpelling: 'ee' },
+            { char: 'उ', correctSpelling: 'u' },
+            { char: 'ऊ', correctSpelling: 'oo' },
+            { char: 'ए', correctSpelling: 'e' },
+            { char: 'ऐ', correctSpelling: 'ai' },
+            { char: 'ओ', correctSpelling: 'o' },
+            { char: 'औ', correctSpelling: 'au' },
+            { char: 'क', correctSpelling: 'ka' },
+            { char: 'ख', correctSpelling: 'kha' },
+            { char: 'ग', correctSpelling: 'ga' },
+            { char: 'घ', correctSpelling: 'gha' },
+            { char: 'च', correctSpelling: 'cha' },
+            { char: 'छ', correctSpelling: 'chha' },
+            { char: 'ज', correctSpelling: 'ja' },
+            { char: 'झ', correctSpelling: 'jha' },
+            { char: 'ट', correctSpelling: 'tta' },
+            { char: 'ठ', correctSpelling: 'ttha' },
+            { char: 'ड', correctSpelling: 'dda' },
+            { char: 'ढ', correctSpelling: 'ddha' },
+            { char: 'त', correctSpelling: 'ta' },
+            { char: 'थ', correctSpelling: 'tha' },
+            { char: 'द', correctSpelling: 'da' },
+            { char: 'ध', correctSpelling: 'dha' },
+            { char: 'प', correctSpelling: 'pa' },
+            { char: 'फ', correctSpelling: 'pha' },
+            { char: 'ब', correctSpelling: 'ba' },
+            { char: 'भ', correctSpelling: 'bha' },
+            { char: 'य', correctSpelling: 'ya' },
+            { char: 'र', correctSpelling: 'ra' },
+            { char: 'ल', correctSpelling: 'la' },
+            { char: 'व', correctSpelling: 'va' },
+            { char: 'श', correctSpelling: 'sha' },
+            { char: 'ष', correctSpelling: 'shha' },
+            { char: 'स', correctSpelling: 'sa' },
+            { char: 'ह', correctSpelling: 'ha' }
+        ];
+
+        const hiraganaChars = [
+            { char: 'あ', correctSpelling: 'a' },
+            { char: 'い', correctSpelling: 'i' },
+            { char: 'う', correctSpelling: 'u' },
+            { char: 'え', correctSpelling: 'e' },
+            { char: 'お', correctSpelling: 'o' },
+            { char: 'か', correctSpelling: 'ka' },
+            { char: 'き', correctSpelling: 'ki' },
+            { char: 'く', correctSpelling: 'ku' },
+            { char: 'け', correctSpelling: 'ke' },
+            { char: 'こ', correctSpelling: 'ko' },
+            { char: 'さ', correctSpelling: 'sa' },
+            { char: 'し', correctSpelling: 'shi' },
+            { char: 'す', correctSpelling: 'su' },
+            { char: 'せ', correctSpelling: 'se' },
+            { char: 'そ', correctSpelling: 'so' },
+            { char: 'た', correctSpelling: 'ta' },
+            { char: 'ち', correctSpelling: 'chi' },
+            { char: 'つ', correctSpelling: 'tsu' },
+            { char: 'て', correctSpelling: 'te' },
+            { char: 'と', correctSpelling: 'to' },
+            { char: 'な', correctSpelling: 'na' },
+            { char: 'に', correctSpelling: 'ni' },
+            { char: 'ぬ', correctSpelling: 'nu' },
+            { char: 'ね', correctSpelling: 'ne' },
+            { char: 'の', correctSpelling: 'no' },
+            { char: 'は', correctSpelling: 'ha' },
+            { char: 'ひ', correctSpelling: 'hi' },
+            { char: 'ふ', correctSpelling: 'fu' },
+            { char: 'へ', correctSpelling: 'he' },
+            { char: 'ほ', correctSpelling: 'ho' },
+            { char: 'ま', correctSpelling: 'ma' },
+            { char: 'み', correctSpelling: 'mi' },
+            { char: 'む', correctSpelling: 'mu' },
+            { char: 'め', correctSpelling: 'me' },
+            { char: 'も', correctSpelling: 'mo' },
+            { char: 'や', correctSpelling: 'ya' },
+            { char: 'ゆ', correctSpelling: 'yu' },
+            { char: 'よ', correctSpelling: 'yo' },
+            { char: 'ら', correctSpelling: 'ra' },
+            { char: 'り', correctSpelling: 'ri' },
+            { char: 'る', correctSpelling: 'ru' },
+            { char: 'れ', correctSpelling: 're' },
+            { char: 'ろ', correctSpelling: 'ro' },
+            { char: 'わ', correctSpelling: 'wa' },
+            { char: 'を', correctSpelling: 'wo' },
+            { char: 'ん', correctSpelling: 'n' }
+        ];
+
+        const katakanaChars = [
+            { char: 'ア', correctSpelling: 'a' },
+            { char: 'イ', correctSpelling: 'i' },
+            { char: 'ウ', correctSpelling: 'u' },
+            { char: 'エ', correctSpelling: 'e' },
+            { char: 'オ', correctSpelling: 'o' },
+            { char: 'カ', correctSpelling: 'ka' },
+            { char: 'キ', correctSpelling: 'ki' },
+            { char: 'ク', correctSpelling: 'ku' },
+            { char: 'ケ', correctSpelling: 'ke' },
+            { char: 'コ', correctSpelling: 'ko' },
+            { char: 'サ', correctSpelling: 'sa' },
+            { char: 'シ', correctSpelling: 'shi' },
+            { char: 'ス', correctSpelling: 'su' },
+            { char: 'セ', correctSpelling: 'se' },
+            { char: 'ソ', correctSpelling: 'so' },
+            { char: 'タ', correctSpelling: 'ta' },
+            { char: 'チ', correctSpelling: 'chi' },
+            { char: 'ツ', correctSpelling: 'tsu' },
+            { char: 'テ', correctSpelling: 'te' },
+            { char: 'ト', correctSpelling: 'to' },
+            { char: 'ナ', correctSpelling: 'na' },
+            { char: 'ニ', correctSpelling: 'ni' },
+            { char: 'ヌ', correctSpelling: 'nu' },
+            { char: 'ネ', correctSpelling: 'ne' },
+            { char: 'ノ', correctSpelling: 'no' },
+            { char: 'ハ', correctSpelling: 'ha' },
+            { char: 'ヒ', correctSpelling: 'hi' },
+            { char: 'フ', correctSpelling: 'fu' },
+            { char: 'ヘ', correctSpelling: 'he' },
+            { char: 'ホ', correctSpelling: 'ho' },
+            { char: 'マ', correctSpelling: 'ma' },
+            { char: 'ミ', correctSpelling: 'mi' },
+            { char: 'ム', correctSpelling: 'mu' },
+            { char: 'メ', correctSpelling: 'me' },
+            { char: 'モ', correctSpelling: 'mo' },
+            { char: 'ヤ', correctSpelling: 'ya' },
+            { char: 'ユ', correctSpelling: 'yu' },
+            { char: 'ヨ', correctSpelling: 'yo' },
+            { char: 'ラ', correctSpelling: 'ra' },
+            { char: 'リ', correctSpelling: 'ri' },
+            { char: 'ル', correctSpelling: 'ru' },
+            { char: 'レ', correctSpelling: 're' },
+            { char: 'ロ', correctSpelling: 'ro' },
+            { char: 'ワ', correctSpelling: 'wa' },
+            { char: 'ヲ', correctSpelling: 'wo' },
+            { char: 'ン', correctSpelling: 'n' }
+        ];
+
+        let currentIndex = 0;
+        let correctAnswers = 0;
+        let totalQuestions = 0;
+        let currentLanguage = ''; // Track selected language
+        let isAnswerSubmitted = false;
+
+        function chooseLanguage(language) {
+            localStorage.setItem('selectedLanguage', language);
+            currentLanguage = language;
+            totalQuestions = (currentLanguage === 'hindi' ? hindiChars : currentLanguage === 'hiragana' ? hiraganaChars : katakanaChars).length;
+            correctAnswers = 0;   // Reset correct answers
+            currentIndex = 0;     // Reset character index to the first one
+            showLearningScreen();
+            shuffleArray(currentLanguage === 'hindi' ? hindiChars : currentLanguage === 'hiragana' ? hiraganaChars : katakanaChars);
+            displayCharacter();
+            document.getElementById("restartBtn").classList.add("hidden");  // Hide restart button when choosing a language
+            document.getElementById("summary").classList.add("hidden");      // Hide summary when starting a new session
+        }
+
+
+        function showLearningScreen() {
+            document.getElementById('menuScreen').classList.add('hidden');
+            document.getElementById('learningScreen').classList.remove('hidden');
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function displayCharacter() {
+            const currentChar = (currentLanguage === 'hindi' ? hindiChars : currentLanguage === 'hiragana' ? hiraganaChars : katakanaChars)[currentIndex].char;
+            document.getElementById("character").textContent = currentChar;
+            document.getElementById("inputField").value = "";
+            document.getElementById("result").textContent = "";
+            document.getElementById("nextBtn").classList.add("hidden");
+            document.getElementById("submitBtn").disabled = false;
+            isAnswerSubmitted = false;
+        }
+
+
+        function handleSubmit() {
+            const userInput = document.getElementById("inputField").value.trim().toLowerCase();
+            const correctSpelling = (currentLanguage === 'hindi' ? hindiChars : currentLanguage === 'hiragana' ? hiraganaChars : katakanaChars)[currentIndex].correctSpelling.toLowerCase();
+
+            if (userInput === correctSpelling) {
+                document.getElementById("result").textContent = "Correct!";
+                document.getElementById("result").classList.add("correct");
+                document.getElementById("result").classList.remove("incorrect");
+                correctAnswers++;
+            } else {
+                document.getElementById("result").textContent = "Incorrect! The correct spelling is: " + correctSpelling;
+                document.getElementById("result").classList.add("incorrect");
+                document.getElementById("result").classList.remove("correct");
+            }
+
+            document.getElementById("submitBtn").disabled = true;
+            document.getElementById("nextBtn").classList.remove("hidden");
+            isAnswerSubmitted = true;
+        }
+
+
+        function moveToNextCharacter() {
+            currentIndex++;
+
+            if (currentIndex < (currentLanguage === 'hindi' ? hindiChars : hiraganaChars).length) {
+                displayCharacter();
+            } else {
+                showSummary();
+            }
+        }
+
+        function showSummary() {
+            document.getElementById("summary").classList.remove("hidden");
+            document.getElementById("correctCount").textContent = correctAnswers;
+            document.getElementById("totalCount").textContent = totalQuestions;
+            const percentage = ((correctAnswers / totalQuestions) * 100).toFixed(2);
+            document.getElementById("correctPercentage").textContent = percentage;
+            document.getElementById("nextBtn").classList.add("hidden");
+            document.getElementById("restartBtn").classList.remove("hidden");
+        }
+
+        function restartGame() {
+            correctAnswers = 0;   // Reset correct answers
+            currentIndex = 0;     // Reset character index to the first one
+            shuffleArray(currentLanguage === 'hindi' ? hindiChars : currentLanguage === 'hiragana' ? hiraganaChars : katakanaChars);
+            displayCharacter();
+            document.getElementById("summary").classList.add("hidden");
+            document.getElementById("restartBtn").classList.add("hidden");
+            document.getElementById("nextBtn").classList.add("hidden");
+        }
+
+        // Function to show the menu screen
+        function showMenu() {
+            document.getElementById('menuScreen').classList.remove('hidden');
+            document.getElementById('learningScreen').classList.add('hidden');
+            document.getElementById('summary').classList.add('hidden');
+            document.getElementById("restartBtn").classList.add("hidden");  // Hide restart button when returning to the menu
+            // Reset all necessary game state
+            correctAnswers = 0;   // Reset correct answers
+            currentIndex = 0;     // Reset character index to the first one
+        }
+
+        // Event listener for Back to Menu button
+        document.getElementById("backToMenuBtn").addEventListener("click", showMenu);
+
+        document.getElementById("submitBtn").addEventListener("click", handleSubmit);
+        document.getElementById("inputField").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                if (!isAnswerSubmitted && document.getElementById("inputField").value.trim() !== "") {
+                    handleSubmit();
+                } else if (isAnswerSubmitted) {
+                    moveToNextCharacter();
+                }
+            }
+        });
+        document.getElementById("nextBtn").addEventListener("click", moveToNextCharacter);
+        document.getElementById("restartBtn").addEventListener("click", restartGame);
+    </script>
+</body>
+</html>

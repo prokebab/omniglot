@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>German Nouns Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2E3138;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #B5F8FE;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        #nounDisplay {
+            font-size: 48px;
+            margin: 20px;
+            font-weight: bold;
+        }
+
+        #inputFields {
+            margin-top: 20px;
+        }
+
+        #inputField {
+            padding: 10px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        #submitBtn {
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+            border-style: solid;
+            border-color: #EFB0A1;
+            background-color: #2E3138;
+            color: #EFB0A1;
+            border-radius: 5px;
+        }
+
+        #submitBtn:hover {
+            border-color: #c59386;
+            color: #c59386;
+        }
+
+        .result {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        .correct {
+            color: green;
+        }
+
+        .incorrect {
+            color: red;
+        }
+
+        #backToMenuBtn {
+            padding: 15px 30px;
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: #f44336; /* Red color */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            position: fixed;
+            bottom: 40px;
+        }
+
+        #backToMenuBtn:hover {
+            background-color: #e53935; /* Darker red on hover */
+        }
+
+        #nextBtn, #restartBtn {
+            padding: 15px 30px;
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: #2E3138;
+            color: #F9F8F8;
+            border: solid;
+            border-color: #F9F8F8;
+            border-radius: 5px;
+        }
+
+        #nextBtn:hover, #restartBtn:hover {
+            color: #c4c8ca;
+            border-color: #c4c8ca;
+        }
+        /* Hides the 'Next' button by default */
+        .hidden {
+            display: none;
+        }
+
+        #singularInput, #pluralInput {
+            padding: 15px;  /* Adjust padding for larger input area */
+            font-size: 18px;  /* Change font size */
+            border: 3px solid #EFB0A1;  /* Add border with desired color and thickness */
+            border-radius: 5px;  /* Rounded corners for the border */
+            width: 300px;  /* Set a fixed width (you can adjust it) */
+            margin: 10px 0;  /* Space between the input fields */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="nounDisplay"></div>
+        <div id="inputFields">
+            <input type="text" id="singularInput" placeholder="Enter the singular form" autocomplete="off">
+            <br>
+            <br>
+            <input type="text" id="pluralInput" placeholder="Enter the plural form">
+        </div>
+        <button id="submitBtn" onclick="checkAnswers()">Submit</button>
+        <div id="result" class="result"></div>
+        <button id="nextBtn" class="hidden" onclick="nextNoun()">Next</button>
+        <button id="restartBtn" class="hidden" onclick="restartGame()">Restart</button>
+        <button id="backToMenuBtn" onclick="window.location.href='index.html'">Back to Menu</button>
+    </div>
+
+    <script>
+        // List of German nouns (you can add more as needed)
+        const nouns = [
+            { english: 'apple', singular: 'der Apfel', plural: 'die Äpfel' },
+            { english: 'car', singular: 'das Auto', plural: 'die Autos' },
+            { english: 'book', singular: 'das Buch', plural: 'die Bücher' },
+            // Add more nouns here
+        ];
+
+        let currentNounIndex = 0; // To track the current noun being displayed
+
+        // Display the current noun
+        function displayNoun() {
+            const noun = nouns[currentNounIndex];
+            document.getElementById('nounDisplay').innerText = `${noun.english}`;
+            document.getElementById('singularInput').value = '';
+            document.getElementById('pluralInput').value = '';
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('nextBtn').classList.add('hidden'); // Hide the "Next" button initially
+        }
+
+        // Check the user's answers
+        // Check the user's answers
+        function checkAnswers() {
+            const singularInput = document.getElementById('singularInput').value.trim();
+            const pluralInput = document.getElementById('pluralInput').value.trim();
+            const noun = nouns[currentNounIndex];
+
+            let resultMessage = '';
+            let correct = true;
+
+            // Check if the singular and plural are correct
+            if (singularInput !== noun.singular) {
+                resultMessage += `Incorrect Singular! The correct form is: ${noun.singular}.<br>`;
+                correct = false;
+            } else {
+                resultMessage += `Correct Singular!<br>`;
+            }
+
+            if (pluralInput !== noun.plural) {
+                resultMessage += `Incorrect Plural! The correct form is: ${noun.plural}.<br>`;
+                correct = false;
+            } else {
+                resultMessage += `Correct Plural!<br>`;
+            }
+
+            if (correct) {
+                resultMessage = `<span class="correct">Well done! Both answers are correct.</span>`;
+            } else {
+                resultMessage = `<span class="incorrect">Try again.</span><br>${resultMessage}`;
+            }
+
+            // Show the result
+            document.getElementById('result').innerHTML = resultMessage;
+
+            // If it's the last noun, show the Restart button instead of Next
+            if (currentNounIndex === nouns.length - 1) {
+                document.getElementById('nextBtn').classList.add('hidden'); // Hide the Next button
+                document.getElementById('restartBtn').classList.remove('hidden'); // Show the Restart button
+            } else {
+                // Otherwise, show the Next button
+                document.getElementById('nextBtn').classList.remove('hidden');
+            }
+        }
+
+
+        // Move to the next noun when the user clicks "Next"
+        function nextNoun() {
+            currentNounIndex++;
+
+            // Check if we've gone through all the nouns
+            if (currentNounIndex >= nouns.length) {
+                // Hide the "Next" button and show the "Restart" button
+                document.getElementById('nextBtn').classList.add('hidden');
+                document.getElementById('restartBtn').classList.remove('hidden');
+            }
+
+            displayNoun(); // Display the next noun
+        }
+
+        // Handle "Enter" key press for submitting answers or moving to the next noun
+        function handleEnterKey(event) {
+            const singularInput = document.getElementById('singularInput').value.trim();
+            const pluralInput = document.getElementById('pluralInput').value.trim();
+
+            // Only allow "Enter" to submit if both inputs are not empty
+            if (event.key === 'Enter' && singularInput !== '' && pluralInput !== '') {
+                // If "Next" button is hidden, submit the answers
+                if (document.getElementById('nextBtn').classList.contains('hidden')) {
+                    checkAnswers();
+                } else {
+                    nextNoun();
+                }
+            }
+        }
+
+        function restartGame() {
+            currentNounIndex = 0; // Reset the noun index to 0
+            document.getElementById('nextBtn').classList.remove('hidden'); // Show the "Next" button again
+            document.getElementById('restartBtn').classList.add('hidden'); // Hide the "Restart" button
+            displayNoun(); // Display the first noun again
+        }
+
+        // Add event listener for "Enter" key press
+        document.getElementById('singularInput').addEventListener('keydown', handleEnterKey);
+        document.getElementById('pluralInput').addEventListener('keydown', handleEnterKey);
+
+        // Initial call to display the first noun
+        displayNoun();
+    </script>
+</body>
+</html>

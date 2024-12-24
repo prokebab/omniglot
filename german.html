@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Learning App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2E3138;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #B5F8FE;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+
+        .menu-container {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        .menu-button {
+            padding: 20px;
+            font-size: 20px;
+            cursor: pointer;
+            margin: 10px;
+            background-color: #2E3138;
+            color: white;
+            border-color: #EFB0A1;
+            border-radius: 5px;
+            border-style: solid;
+            color: #EFB0A1;
+            border-radius: 5px;
+        }
+
+        .menu-button:hover {
+            border-color: #b5877b;
+            color: #b5877b;
+        }
+
+        #backToMenuBtn {
+            padding: 15px 30px;
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: #f44336; /* Red color */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            position: fixed;
+            bottom: 40px;
+        }
+
+        #backToMenuBtn:hover {
+            background-color: #e53935; /* Darker red on hover */
+        }
+    </style>
+</head>
+<body>
+    <div id="menuScreen" class="menu-container">
+        <h1>Select Language to Learn</h1>
+        <button class="menu-button" onclick="window.location.href='german_nouns.html'">German Nouns</button>
+        <button class="menu-button" onclick="window.location.href='german_verbs.html'">German Verbs</button>
+    </div>
+    <button id="backToMenuBtn" class="hidden" onclick="window.location.href='index.html'">Back to Menu</button>
+
+    <script>
+        // This script will allow us to show the "Back to Menu" button when navigating to the lessons
+        document.querySelectorAll('.menu-button').forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('backToMenuBtn').classList.remove('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
